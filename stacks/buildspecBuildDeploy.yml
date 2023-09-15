@@ -1,0 +1,17 @@
+version: 0.2
+
+env:
+  shell: bash
+  exported-variables:
+    - WORKSPACE
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      #npx to avoid installing "-g" global dependencies in CI, which causes other issues:
+      #https://github.com/pnpm/pnpm/issues/4658#issuecomment-1465058302
+      - npx pnpm@8.6.11 --filter $WORKSPACE... install
+  build:
+    commands:
+      - NODE_OPTIONS=--max_old_space_size=2048 npx pnpm@8.6.11 exec turbo deploy --filter $WORKSPACE
